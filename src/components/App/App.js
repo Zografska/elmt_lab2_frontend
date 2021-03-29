@@ -3,7 +3,9 @@ import React, {Component} from "react";
 import {BrowserRouter as Router, Redirect, Route} from 'react-router-dom'
 import Books from "../Books/BookList/books";
 import Categories from "../Categories/categories"
+import Authors from "../Authors/authors"
 import Header from "../Header/header"
+import BookAdd from "../Books/BookAdd/bookAdd";
 import "bootstrap/dist/css/bootstrap.min.css"
 import EShopService from "../../repository/libraryRepository";
 
@@ -13,7 +15,9 @@ class App extends Component{
         super(props);
         this.state = {
             books: [],
-            categories: []
+            categories: [],
+            authors: [],
+            selectedBook: {}
         }
 
     }
@@ -24,10 +28,17 @@ class App extends Component{
                 <Header/>
                 <main>
                     <div className="container">
-                        <Route path={"/books"} exact render={() =>
-                            <Books books={this.state.books} onDelete={this.deleteBook}/>}/>
+
                         <Route path={"/categories"} exact render={() =>
                             <Categories categories={this.state.categories}/>}/>
+                        <Route path={"/authors"} exact render={() =>
+                            <Authors authors={this.state.authors}/>}/>
+                        <Route path={"/books/add"} exact render={() =>
+                            <BookAdd categories={this.state.categories}
+                                     authors={this.state.authors}
+                                     onAddBook={this.addBook}/>}/>
+                        <Route path={"/books"} exact render={() =>
+                            <Books books={this.state.books} onDelete={this.deleteBook}/>}/>
                         <Redirect to={"/books"}/>
                     </div>
                 </main>
@@ -53,6 +64,20 @@ class App extends Component{
                 })
             });
     }
+    loadAuthors = () => {
+        EShopService.fetchAuthors()
+            .then((data) =>{
+                this.setState({
+                    authors: data.data
+                })
+            });
+    }
+    addBook = (name, category,authorId,availableCopies) => {
+        EShopService.addBook(name,category,authorId,availableCopies)
+            .then(() => {
+                this.loadBooks();
+            });
+    }
 
     deleteBook = (id) => {
         EShopService.deleteBook(id)
@@ -61,9 +86,27 @@ class App extends Component{
             });
     }
 
+    getBook = (id) => {
+        EShopService.getBook(id)
+            .then((data) => {
+                this.setState({
+                    selectedBook: data.data
+                })
+            })
+    }
+
+    editProduct = (id,name,category,authorId,availableCopies) => {
+        EShopService.editBook(id,name,category,authorId,availableCopies)
+            .then(() => {
+                this.loadBooks();
+            });
+    }
+
+
     componentDidMount() {
         this.loadBooks()
         this.loadCategories()
+        this.loadAuthors()
     }
 }
 
