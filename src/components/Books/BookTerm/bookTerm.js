@@ -13,11 +13,15 @@ const bookTerm = (props) => {
                    onClick={() => props.onDelete(props.term.id)}>
                     Delete
                 </a>
-                {/*<Link className={"btn btn-info ml-2"}*/}
-                {/*      onClick={() => props.onEdit(props.term.id)}*/}
-                {/*      to={`/products/edit/${props.term.id}`}>*/}
-                {/*    Edit*/}
-                {/*</Link>*/}
+                <a title={"Take book"} className={"btn btn-success"}
+                   onClick={() => props.onTake(props.term.id)}>
+                    Take Book
+                </a>
+                <Link className={"btn btn-info ml-2"}
+                      onClick={() => props.onEdit(props.term.id)}
+                      to={`/products/edit/${props.term.id}`}>
+                    Edit
+                </Link>
             </td>
         </tr>
     )

@@ -30,6 +30,9 @@ const EShopService = {
                 "availableCopies" : availableCopies
             });
     },
+    takeBook: (id) => {
+        return axios.post(`/books/take/${id}`);
+    },
     getBook: (id) => {
         return axios.get(`/books/${id}`);
     }
